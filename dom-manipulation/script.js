@@ -124,7 +124,7 @@ function syncQuotes(serverQuotes) {
     if (updated) {
         localStorage.setItem("quotes", JSON.stringify(quotes));
         populateCategories();
-        showNotification("Quotes updated from server!");
+        showNotification("Quotes synced with server!"); // ✅ Changed to match test requirement
     }
 }
 
