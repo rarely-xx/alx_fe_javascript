@@ -1,37 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dynamic Quote Generator — Filterable</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    #quoteDisplay .quote { margin: 10px 0; padding: 8px; border-left: 3px solid #333; background:#f7f7f7; }
-    label, select, input, button { margin: 6px 0; display:block; }
-  </style>
+    <title>Dynamic Quote Generator with Sync</title>
 </head>
 <body>
-  <h1>Dynamic Quote Generator</h1>
+    <h1>Dynamic Quote Generator</h1>
 
-  <div>
-    <label for="categoryFilter">Filter by category:</label>
-    <select id="categoryFilter" onchange="filterQuote()">
-      <!-- options populated by populateCategories() which uses appendChild -->
-    </select>
-  </div>
+    <select id="categoryFilter" onchange="filterQuotes()"></select>
+    <div id="quoteDisplay"></div>
 
-  <div id="quoteDisplay" aria-live="polite" style="margin-top:16px;">
-    <!-- A random quote for selected category will appear here -->
-  </div>
+    <button onclick="displayRandomQuote()">Show New Quote</button>
+    <button onclick="addQuote(prompt('Enter quote text:'), prompt('Enter category:'))">Add Quote</button>
 
-  <h2>Add a quote</h2>
-  <form id="addQuoteForm">
-    <input id="quoteText" type="text" placeholder="Quote text" required />
-    <input id="quoteAuthor" type="text" placeholder="Author" />
-    <input id="quoteCategory" type="text" placeholder="Category" required />
-    <button type="submit">Add Quote</button>
-  </form>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
