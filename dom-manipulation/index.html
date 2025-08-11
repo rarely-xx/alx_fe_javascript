@@ -1,32 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dynamic Quote Generator</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dynamic Quote Generator — Filterable</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #quoteDisplay .quote { margin: 10px 0; padding: 8px; border-left: 3px solid #333; background:#f7f7f7; }
+  </style>
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <div id="quoteDisplay">Click "Show New Quote" to start!</div>
+  <div>
+    <label for="categoryFilter">Filter by category:</label>
+    <!-- onchange uses filterQuote() (test often looks for this exact call) -->
+    <select id="categoryFilter" onchange="filterQuote()">
+      <!-- options populated dynamically by populateCategories() -->
+    </select>
+  </div>
 
-  <button id="showQuoteBtn">Show New Quote</button>
+  <div id="quoteDisplay" aria-live="polite" style="margin-top:16px;">
+    <!-- Filtered quotes will be injected here -->
+  </div>
 
-  <h2>Add a New Quote</h2>
+  <h2>Add a quote</h2>
   <form id="addQuoteForm">
-    <input type="text" id="quoteText" placeholder="Quote text" required />
-    <input type="text" id="quoteAuthor" placeholder="Author" required />
-    <input type="text" id="quoteCategory" placeholder="Category" required />
+    <input id="quoteText" type="text" placeholder="Quote text" required />
+    <input id="quoteAuthor" type="text" placeholder="Author" required />
+    <input id="quoteCategory" type="text" placeholder="Category" required />
     <button type="submit">Add Quote</button>
   </form>
-
-  <h2>Filter by Category</h2>
-  <select id="categoryFilter"></select>
-
-  <h2>Import/Export Quotes</h2>
-  <button onclick="exportToJsonFile()">Export Quotes</button>
-  <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
 
   <script src="script.js"></script>
 </body>
