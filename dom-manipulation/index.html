@@ -1,17 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Dynamic Quote Generator with Sync</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dynamic Quote Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    #quoteDisplay {
+      background: #fff;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 500px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      min-height: 80px;
+    }
+    .form-section {
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px auto;
+      max-width: 500px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    input, select, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background: #28a745;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #218838;
+    }
+    #notification {
+      text-align: center;
+      padding: 10px;
+      margin-top: 15px;
+      display: none;
+      background-color: #ffc107;
+      color: #333;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Dynamic Quote Generator</h1>
 
-    <select id="categoryFilter" onchange="filterQuotes()"></select>
-    <div id="quoteDisplay"></div>
+  <h1>Dynamic Quote Generator</h1>
 
-    <button onclick="displayRandomQuote()">Show New Quote</button>
-    <button onclick="addQuote(prompt('Enter quote text:'), prompt('Enter category:'))">Add Quote</button>
+  <!-- Category Filter -->
+  <div class="form-section">
+    <label for="categoryFilter">Filter by Category:</label>
+    <select id="categoryFilter" onchange="filterQuotes()">
+      <option value="all">All Categories</option>
+    </select>
+  </div>
 
-    <script src="script.js"></script>
+  <!-- Display Random Quote -->
+  <div id="quoteDisplay">Click "New Quote" to start</div>
+
+  <!-- New Quote Button -->
+  <div class="form-section">
+    <button onclick="showRandomQuote()">New Quote</button>
+  </div>
+
+  <!-- Add Quote Form -->
+  <div class="form-section">
+    <h3>Add a New Quote</h3>
+    <input type="text" id="newQuote" placeholder="Quote text" />
+    <input type="text" id="newAuthor" placeholder="Author" />
+    <input type="text" id="newCategory" placeholder="Category" />
+    <button onclick="addQuote()">Add Quote</button>
+  </div>
+
+  <!-- Notification for Sync/Conflict -->
+  <div id="notification"></div>
+
+  <script src="script.js"></script>
 </body>
 </html>
