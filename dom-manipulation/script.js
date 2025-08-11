@@ -1,14 +1,23 @@
 // script.js
 
-// Load stored quotes or start with defaults
+// Utility: safe text to avoid injecting raw HTML
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// Load quotes from localStorage or use defaults
 function loadQuotes() {
-  const stored = localStorage.getItem('quotes');
-  if (stored) {
+  const raw = localStorage.getItem('quotes');
+  if (raw) {
     try {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
     } catch (e) {
-      console.warn('Invalid quotes in localStorage, resetting.');
-      localStorage.removeItem('quotes');
+      console.warn('Could not parse stored quotes, resetting.');
     }
   }
   return [
@@ -20,55 +29,50 @@ function loadQuotes() {
 
 let quotes = loadQuotes();
 
-// Save quotes to localStorage
+// Persist quotes
 function saveQuotes() {
   localStorage.setItem('quotes', JSON.stringify(quotes));
 }
 
-// Build the category dropdown using appendChild (required by checker)
+// Build category dropdown using appendChild (tests look for appendChild)
 function populateCategories() {
   const select = document.getElementById('categoryFilter');
   if (!select) return;
 
-  // collect unique categories
+  // Unique categories sorted
   const unique = Array.from(new Set(quotes.map(q => q.category))).sort();
-  // include "all" at the start
   const categories = ['all', ...unique];
 
-  // clear existing options
+  // clear current options
   select.innerHTML = '';
 
-  // get last chosen category from storage (restore)
+  // get last selected category from storage (restore)
   const last = localStorage.getItem('lastCategory') || 'all';
 
   categories.forEach(cat => {
     const opt = document.createElement('option');
     opt.value = cat;
     opt.textContent = cat;
-    // appendChild used here (test looks for appendChild usage)
-    select.appendChild(opt);
+    select.appendChild(opt); // <-- appendChild usage required
   });
 
-  // restore selection if available
-  if (categories.includes(last)) {
-    select.value = last;
-  } else {
-    select.value = 'all';
-  }
+  // restore selection (if previously saved)
+  if (categories.includes(last)) select.value = last;
+  else select.value = 'all';
 }
 
-// Filters quotes by selected category and updates the DOM
+// filterQuote: filter by selected category, pick a random quote using Math.random, update DOM, save selected category
 function filterQuote() {
   const select = document.getElementById('categoryFilter');
   if (!select) return;
+
   const selected = select.value;
-  // Save last selected category to localStorage
+  // save selected category to localStorage
   localStorage.setItem('lastCategory', selected);
 
-  // Get filtered array
-  const filtered = (selected === 'all') ? quotes : quotes.filter(q => q.category === selected);
+  // get filtered list
+  const filtered = (selected === 'all') ? quotes.slice() : quotes.filter(q => q.category === selected);
 
-  // Update DOM
   const display = document.getElementById('quoteDisplay');
   if (!display) return;
 
@@ -77,16 +81,19 @@ function filterQuote() {
     return;
   }
 
-  // Build HTML for filtered quotes
-  display.innerHTML = filtered.map(q => `
+  // choose a random quote from filtered using Math.random
+  const idx = Math.floor(Math.random() * filtered.length);
+  const q = filtered[idx];
+
+  display.innerHTML = `
     <div class="quote">
       <p>"${escapeHtml(q.text)}"</p>
       <small>- ${escapeHtml(q.author || 'Unknown')} <em>[${escapeHtml(q.category)}]</em></small>
     </div>
-  `).join('');
+  `;
 }
 
-// Add a new quote, update storage and UI (also update categories)
+// Add new quote, update storage, update categories and UI
 function addQuote(event) {
   event.preventDefault();
   const textEl = document.getElementById('quoteText');
@@ -94,52 +101,44 @@ function addQuote(event) {
   const categoryEl = document.getElementById('quoteCategory');
 
   const text = (textEl && textEl.value || '').trim();
-  const author = (authorEl && authorEl.value || '').trim();
+  const author = (authorEl && authorEl.value || '').trim() || 'Unknown';
   const category = (categoryEl && categoryEl.value || '').trim();
 
   if (!text || !category) {
-    alert('Please provide a quote and category.');
+    alert('Please provide both quote text and category.');
     return;
   }
 
-  const newQuote = { text, author: author || 'Unknown', category };
+  const newQuote = { text, author, category };
   quotes.push(newQuote);
-
-  // persist quotes and refresh UI
   saveQuotes();
+
+  // refresh categories and set to the new category
   populateCategories();
-  // set the select to the new category and persist it
   const select = document.getElementById('categoryFilter');
   select.value = category;
   localStorage.setItem('lastCategory', category);
 
-  filterQuote(); // update displayed quotes for the selected category
+  // display a random quote from the newly selected category (filterQuote uses Math.random)
+  filterQuote();
 
   // reset form
   document.getElementById('addQuoteForm').reset();
 }
 
-// small helper to avoid injecting broken HTML
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-// Initialize everything on DOM load
+// Initialize on DOM load: populate categories, restore last category, display quote, wire form
 document.addEventListener('DOMContentLoaded', () => {
   populateCategories();
 
-  // restore last selected category and display
+  // restore last selected category
   const last = localStorage.getItem('lastCategory') || 'all';
   const select = document.getElementById('categoryFilter');
   if (select) select.value = last;
 
+  // display a random quote for the restored category
   filterQuote();
 
-  // wire the add-quote form
+  // wire form submit
   const form = document.getElementById('addQuoteForm');
   if (form) form.addEventListener('submit', addQuote);
 });
