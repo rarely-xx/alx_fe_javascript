@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Dynamic Quote Generator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Quote Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    #notification { background: yellow; padding: 10px; display: none; margin-bottom: 10px; }
+    select, button, input { margin: 5px; padding: 5px; }
+  </style>
 </head>
 <body>
-    <h1>Dynamic Quote Generator</h1>
-    <div id="quoteDisplay" style="margin: 20px; font-size: 20px;"></div>
+  <h1>Dynamic Quote Generator</h1>
+  <div id="notification"></div>
+  
+  <div>
+    <select id="category-select"></select>
+    <button id="show-quote">Show New Quote</button>
+  </div>
+  
+  <p id="quote-display"></p>
+  
+  <form id="add-quote-form">
+    <input type="text" id="new-quote-text" placeholder="Quote text" required>
+    <input type="text" id="new-quote-category" placeholder="Category" required>
+    <button type="submit">Add Quote</button>
+  </form>
 
-    <label for="categorySelect">Filter by category:</label>
-    <select id="categorySelect">
-        <option value="All">All</option>
-        <option value="Motivation">Motivation</option>
-        <option value="Resilience">Resilience</option>
-        <option value="Server">Server</option>
-    </select>
-
-    <h2>Add a Quote</h2>
-    <input type="text" id="newQuoteText" placeholder="Quote text">
-    <input type="text" id="newQuoteCategory" placeholder="Category">
-    <button id="addQuoteBtn">Add Quote</button>
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
